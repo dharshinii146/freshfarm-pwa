@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FreshFarm Direct - Farmer</title>
+  <style>
+    :root {
+      --bg: #eef3ec;
+      --card: #fff;
+      --ink: #17261c;
+      --mut: #5d6b60;
+      --pri: #1f6b3a;
+      --onpri: #fff;
+      --deal: #c98a00;
+      --bad: #b3261e;
+      --line: #d5dfd3;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
+
+    @media (prefers-color-scheme:dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #101a13;
+        --card: #1a271e;
+        --ink: #e8f1e9;
+        --mut: #9db0a0;
+        --pri: #5fc47f;
+        --onpri: #08210f;
+        --deal: #f0b429;
+        --bad: #ff8a80;
+        --line: #2c3d31
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #101a13;
+      --card: #1a271e;
+      --ink: #e8f1e9;
+      --mut: #9db0a0;
+      --pri: #5fc47f;
+      --onpri: #08210f;
+      --deal: #f0b429;
+      --bad: #ff8a80;
+      --line: #2c3d31
+    }
+
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.5 system-ui, "Segoe UI", Roboto, sans-serif
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px
+    }
+
+    h1 {
+      font: 700 28px/1.15 Georgia, serif;
+      margin: 0
+    }
+
+    h2 {
+      font: 700 20px/1.2 Georgia, serif;
+      margin: 0 0 10px
+    }
+
+    .sub {
+      color: var(--mut);
+      margin: 4px 0 14px
+    }
+
+    nav {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+      flex-wrap: wrap
+    }
+
+    nav button {
+      flex: 1;
+      min-width: 110px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 8px;
+      font: 600 15px inherit;
+      cursor: pointer
+    }
+
+    nav button.on {
+      background: var(--pri);
+      color: var(--onpri);
+      border-color: var(--pri)
+    }
+
+    .box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: var(--mut);
+      margin: 8px 0 3px
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--ink);
+      font: inherit
+    }
+
+    button.b {
+      padding: 9px 14px;
+      border: 0;
+      border-radius: 6px;
+      background: var(--pri);
+      color: var(--onpri);
+      font: 600 15px inherit;
+      cursor: pointer;
+      margin-top: 10px
+    }
+
+    button.s {
+      background: transparent;
+      color: var(--pri);
+      border: 1px solid var(--pri);
+      margin-right: 6px
+    }
+
+    button.r {
+      background: transparent;
+      color: var(--bad);
+      border: 1px solid var(--bad);
+      margin-right: 6px
+    }
+
+    .price {
+      font-size: 20px;
+      font-weight: 700
+    }
+
+    .old {
+      text-decoration: line-through;
+      color: var(--mut);
+      font-size: 14px;
+      margin-left: 6px
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--deal);
+      color: #1b1300;
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-size: 13px;
+      font-weight: 700
+    }
+
+    .pill {
+      border-radius: 20px;
+      padding: 1px 9px;
+      font-size: 13px;
+      border: 1px solid var(--line);
+      color: var(--mut)
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line)
+    }
+
+    .row:last-child {
+      border: 0
+    }
+
+    .m {
+      color: var(--mut);
+      font-size: 14px
+    }
+
+    .msg {
+      padding: 9px 12px;
+      border-radius: 6px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      margin-bottom: 12px
+    }
+
+    .note {
+      font-size: 13px;
+      color: var(--mut)
+    }
+
+    nav a {
+      flex: 1;
+      min-width: 110px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      text-align: center;
+      text-decoration: none
+    }
+
+    nav a.on {
+      background: var(--pri);
+      color: var(--onpri);
+      border-color: var(--pri)
+    }
+
+    .note a {
+      color: var(--pri)
+    }
+
+    .home {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px
+    }
+
+    .home a {
+      display: block;
+      text-decoration: none;
+      color: var(--ink)
+    }
+
+    .tabb {
+      flex: 1;
+      min-width: 110px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      margin: 0
+    }
+
+    .tabb.on {
+      background: var(--pri);
+      color: var(--onpri);
+      border-color: var(--pri)
+    }
+
+    .thumb {
+      width: 120px;
+      height: 86px;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      cursor: zoom-in;
+      display: block
+    }
+
+    .trk {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      margin: 8px 0;
+      font-size: 14px
+    }
+
+    .stp {
+      padding: 3px 9px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      color: var(--mut)
+    }
+
+    .stp.on {
+      background: var(--pri);
+      color: var(--onpri);
+      border-color: var(--pri)
+    }
+
+    .stp small {
+      opacity: .85
+    }
+
+    .arr {
+      color: var(--mut)
+    }
+
+    .eta-line {
+      font-size: 18px;
+      margin: 4px 0;
+      color: var(--pri)
+    }
+
+    .route {
+      margin: 8px 0;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--bg)
+    }
+
+    .rline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 10px 0
+    }
+
+    .rend {
+      font-size: 13px;
+      color: var(--mut);
+      max-width: 30%
+    }
+
+    .road {
+      position: relative;
+      flex: 1;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--line);
+      margin: 0 10px
+    }
+
+    .dot {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-style: normal;
+      font-size: 22px;
+      transition: left 1s linear
+    }
+
+    .map {
+      width: 100%;
+      height: 220px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-top: 6px;
+      background: #fff
+    }
+
+    .nbar {
+      border: 2px solid var(--deal);
+      background: var(--card);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 14px
+    }
+  </style>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1f6b3a">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="FreshFarm">
+</head>
+
+<body>
+  <div class="wrap">
+    <h1 id="h1"></h1>
+    <p class="sub" id="sub"></p>
+    <nav id="nav"></nav>
+    <div id="msg"></div>
+    <div id="app"></div>
+    <p class="note" id="ft"></p>
+    <p class="note" id="rs" style="display:none"><a href="#" onclick="resetData();return false">Reset demo data</a></p>
+  </div>
+  <script>
+    /* ===== shared code (data, language, helpers) ===== */
+    /* FreshFarm Direct - shared code used by customer.html, farmer.html and fpo.html
+       (data storage, language switch, page frame). Do not delete this file. */
+    var KEY = "ffd_multi_v2", notice = "", FPOS = ["Green Valley FPO", "Hill Farmers FPO"], LANG = (function () { try { return localStorage.getItem("ffd_lang") || "en" } catch (e) { return "en" } })();
+    var RX = [[/Choose a quantity between 1 and (\d+)\./, "அளவை 1 முதல் $1 வரை தேர்வு செய்யவும்."], [/Order placed: (\d+) (\S+) (.+?) for ₹(\d+)\. The farmer has been notified\./, "ஆர்டர் செய்யப்பட்டது: $1 $2 $3, ₹$4. விவசாயிக்குத் தெரிவிக்கப்பட்டது."]];
+    var PH = [["FreshFarm Direct", "ஃப்ரெஷ்ஃபார்ம் டைரக்ட்"], ["Buy straight from verified farmers. No middlemen. (Prototype: one browser plays all three roles.)", "சரிபார்க்கப்பட்ட விவசாயிகளிடம் நேரடியாக வாங்குங்கள். இடைத்தரகர்கள் இல்லை. (மாதிரி: ஒரே உலாவியில் மூன்று பாத்திரங்களும் செயல்படும்.)"], ["Demo logins: farmer Murugan 9000000001 / 1234 (approved). Lakshmi 9000000002 / 1234 is waiting for FPO approval.", "மாதிரி உள்நுழைவுகள்: விவசாயி முருகன் 9000000001 / 1234 (அங்கீகரிக்கப்பட்டது). லட்சுமி 9000000002 / 1234 FPO அங்கீகாரத்திற்காக காத்திருக்கிறார்."], ["Customer", "வாடிக்கையாளர்"], ["Farmer", "விவசாயி"], ["FPO officer", "FPO அதிகாரி"], ["Your details", "உங்கள் விவரங்கள்"], ["Name", "பெயர்"], ["Phone", "தொலைபேசி"], ["Fresh from farmers", "விவசாயிகளிடமிருந்து புதியது"], ["Nothing listed right now. Check back after farmers add stock.", "இப்போது எதுவும் பட்டியலிடப்படவில்லை. விவசாயிகள் பொருட்களைச் சேர்த்த பிறகு மீண்டும் பார்க்கவும்."], ["Place order", "ஆர்டர் செய்"], ["Quantity", "அளவு"], [" left ·", " மீதம் ·"], ["harvested", "அறுவடை"], ["sell by", "விற்பனை கடைசி தேதி"], ["Sell-by date", "விற்பனை கடைசி தேதி"], ["Your orders", "உங்கள் ஆர்டர்கள்"], ["No orders yet. Enter your phone above, then order.", "இன்னும் ஆர்டர்கள் இல்லை. மேலே தொலைபேசி எண்ணை உள்ளிட்டு ஆர்டர் செய்யுங்கள்."], ["No orders yet.", "இன்னும் ஆர்டர்கள் இல்லை."], ["New farmer? Register", "புதிய விவசாயியா? பதிவு செய்யுங்கள்"], ["New", "புதியது"], ["Delivered", "டெலிவரி ஆனது"], ["% off", "% தள்ளுபடி"], ["Farmer login", "விவசாயி உள்நுழைவு"], ["Create password", "கடவுச்சொல்லை உருவாக்கு"], ["Password", "கடவுச்சொல்"], ["Log in", "உள்நுழை"], ["Log out", "வெளியேறு"], ["Village", "கிராமம்"], ["FPO membership no.", "FPO உறுப்பினர் எண்"], ["Send for FPO approval", "FPO அங்கீகாரத்திற்கு அனுப்பு"], ["Welcome, ", "வரவேற்கிறோம், "], ["List a product", "பொருளைப் பட்டியலிடு"], ["Crop", "பயிர்"], ["Price per unit (₹)", "ஒரு அலகு விலை (₹)"], ["Unit (kg, bunch...)", "அலகு (கிலோ, கட்டு...)"], ["Harvest date", "அறுவடை தேதி"], ["Add to shop", "கடையில் சேர்"], ["Your listings", "உங்கள் பட்டியல்கள்"], ["No listings yet. Add your first crop above.", "இன்னும் பட்டியல்கள் இல்லை. மேலே உங்கள் முதல் பயிரைச் சேர்க்கவும்."], ["Orders to deliver", "வழங்க வேண்டிய ஆர்டர்கள்"], ["Mark delivered", "வழங்கப்பட்டது எனக் குறி"], [" for ", " — வாங்குபவர்: "], ["Farmers waiting for approval", "அங்கீகாரத்திற்காக காத்திருக்கும் விவசாயிகள்"], ["No pending requests.", "நிலுவையில் கோரிக்கைகள் இல்லை."], ["Approved farmers", "அங்கீகரிக்கப்பட்ட விவசாயிகள்"], ["approved", "அங்கீகரிக்கப்பட்டது"], ["Approve", "அங்கீகரி"], ["Reject", "நிராகரி"], ["None yet.", "இன்னும் இல்லை."], ["Stock about to spoil (2 days or less)", "கெட்டுப்போகும் நிலையில் உள்ள இருப்பு (2 நாட்கள் அல்லது குறைவு)"], ["(expired)", "(காலாவதியானது)"], ["Surplus deal −25%", "உபரி சலுகை −25%"], ["FPO buys at 60%", "FPO 60% விலைக்கு வாங்கும்"], ["Process / donate", "பதப்படுத்து / தானம்"], ["Nothing close to its sell-by date.", "விற்பனை கடைசி தேதிக்கு அருகில் எதுவும் இல்லை."], ["Items 3 days from expiry get 10% off automatically, and 1 day or less gets 25% off.", "காலாவதிக்கு 3 நாட்கள் உள்ள பொருட்களுக்கு 10% தானாகவே தள்ளுபடி, 1 நாள் அல்லது குறைவாக இருந்தால் 25% தள்ளுபடி."], ["Action log", "செயல் பதிவு"], ["No actions yet.", "இன்னும் செயல்கள் இல்லை."], [": moved to Surplus Deals at 25% off", ": உபரி சலுகைப் பிரிவுக்கு மாற்றப்பட்டது (25% தள்ளுபடி)"], [": FPO bought ", ": FPO வாங்கியது — "], [" at ₹", " ₹"], [" each for the collection centre", " வீதம், சேகரிப்பு மையத்திற்கு"], [" sent to processing or donation", " பதப்படுத்த அல்லது தானம் செய்ய அனுப்பப்பட்டது"], ["Enter your name and a 10-digit phone number first.", "முதலில் உங்கள் பெயரையும் 10 இலக்க தொலைபேசி எண்ணையும் உள்ளிடவும்."], ["Wrong phone or password.", "தொலைபேசி எண் அல்லது கடவுச்சொல் தவறு."], ["Your account is waiting for FPO approval. You will get a login SMS once approved.", "உங்கள் கணக்கு FPO அங்கீகாரத்திற்காக காத்திருக்கிறது. அங்கீகரிக்கப்பட்டதும் உள்நுழைவு SMS வரும்."], ["The FPO did not approve this account. Contact your FPO office.", "இந்தக் கணக்கை FPO அங்கீகரிக்கவில்லை. உங்கள் FPO அலுவலகத்தைத் தொடர்பு கொள்ளவும்."], ["Fill every field. Phone needs 10 digits and password at least 4 characters.", "எல்லா புலங்களையும் நிரப்பவும். தொலைபேசி 10 இலக்கங்கள், கடவுச்சொல் குறைந்தது 4 எழுத்துகள் தேவை."], ["This phone number is already registered.", "இந்த தொலைபேசி எண் ஏற்கனவே பதிவு செய்யப்பட்டுள்ளது."], ["Sent to your FPO. You can log in after approval.", "உங்கள் FPO-விற்கு அனுப்பப்பட்டது. அங்கீகாரத்திற்குப் பிறகு உள்நுழையலாம்."], ["Enter crop, price, quantity and sell-by date.", "பயிர், விலை, அளவு, விற்பனை கடைசி தேதியை உள்ளிடவும்."], ["Added. Customers can see it now.", "சேர்க்கப்பட்டது. வாடிக்கையாளர்கள் இப்போது பார்க்கலாம்."], ["Farmer approved.", "விவசாயி அங்கீகரிக்கப்பட்டார்."], ["Farmer rejected.", "விவசாயி நிராகரிக்கப்பட்டார்."], ["Done.", "முடிந்தது."], ["Tomato", "தக்காளி"], ["Brinjal", "கத்தரிக்காய்"], ["Spinach", "கீரை"], ["Murugan", "முருகன்"], ["Lakshmi", "லட்சுமி"]];
+    PH.push(["FPO officer login", "FPO அதிகாரி உள்நுழைவு"], ["User ID", "பயனர் ஐடி"], ["Wrong ID or password.", "ஐடி அல்லது கடவுச்சொல் தவறு."], ["Buy straight from verified farmers. No middlemen.", "சரிபார்க்கப்பட்ட விவசாயிகளிடம் நேரடியாக வாங்குங்கள். இடைத்தரகர்கள் இல்லை."], ["Type your name and a 10-digit phone number above, then place an order.", "மேலே உங்கள் பெயரையும் 10 இலக்க தொலைபேசி எண்ணையும் உள்ளிட்டு ஆர்டர் செய்யுங்கள்."], ["FPO login: ID fpo, password admin123", "FPO உள்நுழைவு: ஐடி fpo, கடவுச்சொல் admin123"]);
+    PH.push(["Farmer login: Murugan 9000000001 / 1234  |  FPO login: ID fpo, password admin123", "விவசாயி உள்நுழைவு: முருகன் 9000000001 / 1234  |  FPO உள்நுழைவு: ஐடி fpo, கடவுச்சொல் admin123"]);
+    PH.push(["Select your FPO", "உங்கள் FPO-வைத் தேர்ந்தெடுக்கவும்"], ["Land size (acres)", "நில அளவு (ஏக்கர்)"], ["Crops grown", "பயிரிடும் பயிர்கள்"], ["Land record (patta) no.", "நில ஆவண (பட்டா) எண்"], ["FPO membership no. (leave blank if you are new)", "FPO உறுப்பினர் எண் (புதியவர் எனில் காலியாக விடவும்)"], ["Number not found in member register", "உறுப்பினர் பதிவேட்டில் எண் இல்லை"], ["Match found: number, name and phone agree", "பொருத்தம் கிடைத்தது: எண், பெயர், தொலைபேசி ஒத்துப்போகின்றன"], ["Number found but name or phone differs", "எண் உள்ளது ஆனால் பெயர் அல்லது தொலைபேசி வேறுபடுகிறது"], ["No number given, but this phone is in the member register", "எண் தரப்படவில்லை, ஆனால் இந்த தொலைபேசி உறுப்பினர் பதிவேட்டில் உள்ளது"], ["New applicant: not in member register. Check documents.", "புதிய விண்ணப்பதாரர்: உறுப்பினர் பதிவேட்டில் இல்லை. ஆவணங்களைச் சரிபார்க்கவும்."], ["Identity checked", "அடையாளம் சரிபார்க்கப்பட்டது"], ["Land record checked", "நில ஆவணம் சரிபார்க்கப்பட்டது"], ["Phone verified by call", "தொலைபேசி அழைப்பில் உறுதிசெய்யப்பட்டது"], ["Assign membership number", "உறுப்பினர் எண்ணை வழங்கவும்"], ["Reason for rejection", "நிராகரிப்புக்கான காரணம்"], ["FPO member register", "FPO உறுப்பினர் பதிவேடு"], ["Add member", "உறுப்பினரைச் சேர்"], ["Please tick all three checks before approving.", "அங்கீகரிக்கும் முன் மூன்று சரிபார்ப்புகளையும் டிக் செய்யவும்."], ["Enter the membership number to assign.", "வழங்க வேண்டிய உறுப்பினர் எண்ணை உள்ளிடவும்."], ["Enter a reason for rejection.", "நிராகரிப்புக்கான காரணத்தை உள்ளிடவும்."], ["This membership number is already used.", "இந்த உறுப்பினர் எண் ஏற்கனவே பயன்படுத்தப்பட்டுள்ளது."], ["Enter membership number, name and a 10-digit phone.", "உறுப்பினர் எண், பெயர், 10 இலக்க தொலைபேசி எண்ணை உள்ளிடவும்."], ["Member added.", "உறுப்பினர் சேர்க்கப்பட்டது."], [" Reason: ", " காரணம்: "]);
+    PH.push(["ID proof photo (Aadhaar / voter ID)", "அடையாளச் சான்று புகைப்படம் (ஆதார் / வாக்காளர் அட்டை)"], ["Land record photo (patta / chitta)", "நில ஆவணப் புகைப்படம் (பட்டா / சிட்டா)"], ["ID proof photo", "அடையாளச் சான்று புகைப்படம்"], ["Land record photo", "நில ஆவணப் புகைப்படம்"], ["✓ Photo added", "✓ புகைப்படம் சேர்க்கப்பட்டது"], ["Reading photo...", "புகைப்படம் படிக்கப்படுகிறது..."], ["This file is not a photo. Choose an image.", "இது புகைப்படம் அல்ல. படத்தைத் தேர்வு செய்யவும்."], [": not uploaded", ": பதிவேற்றப்படவில்லை"], ["Please add both photos: ID proof and land record.", "இரண்டு புகைப்படங்களையும் சேர்க்கவும்: அடையாளச் சான்று மற்றும் நில ஆவணம்."], ["Could not save (browser storage full). Use smaller photos.", "சேமிக்க முடியவில்லை (உலாவி நினைவகம் நிரம்பியது). சிறிய புகைப்படங்களைப் பயன்படுத்தவும்."], ["This farmer has not uploaded both photos yet.", "இந்த விவசாயி இன்னும் இரண்டு புகைப்படங்களையும் பதிவேற்றவில்லை."]);
+    PH.push(["ID proof type", "அடையாளச் சான்று வகை"], ["Aadhaar card", "ஆதார் அட்டை"], ["Voter ID", "வாக்காளர் அட்டை"], ["Other government ID", "பிற அரசு அடையாள அட்டை"]);
+    PH.push(["Cancel order", "ஆர்டரை ரத்து செய்"], ["Reason for cancelling", "ரத்து செய்யும் காரணம்"], ["Changed my mind", "மனம் மாறிவிட்டது"], ["Ordered by mistake", "தவறுதலாக ஆர்டர் செய்தேன்"], ["Delivery is taking too long", "டெலிவரி தாமதமாகிறது"], ["Found another option", "வேறு வழி கிடைத்தது"], ["Report a problem", "பிரச்சனையைப் புகாரளி"], ["Poor quality or damaged", "தரம் குறைவு அல்லது சேதம்"], ["Wrong quantity received", "தவறான அளவு கிடைத்தது"], ["Order not received", "ஆர்டர் கிடைக்கவில்லை"], ["Describe the problem (optional)", "பிரச்சனையை விவரிக்கவும் (விருப்பம்)"], ["Send to FPO", "FPO-விற்கு அனுப்பு"], ["Out for delivery", "டெலிவரிக்கு புறப்பட்டது"], ["Cancelled by customer: ", "வாடிக்கையாளர் ரத்து செய்தார்: "], ["Cancelled", "ரத்து செய்யப்பட்டது"], ["Delivery failed: ", "டெலிவரி தோல்வி: "], ["Delivery failed", "டெலிவரி தோல்வி"], ["Issue reported", "பிரச்சனை புகாரளிக்கப்பட்டது"], ["Resolved", "தீர்க்கப்பட்டது"], ["Problem reported: ", "புகார்: "], [" — waiting for FPO decision", " — FPO முடிவுக்காக காத்திருக்கிறது"], [". FPO decision: ", ". FPO முடிவு: "], ["Order cancelled. The farmer has been informed and the stock is returned.", "ஆர்டர் ரத்து செய்யப்பட்டது. விவசாயிக்குத் தெரிவிக்கப்பட்டது, இருப்பு திருப்பப்பட்டது."], ["Choose a reason first.", "முதலில் காரணத்தைத் தேர்வு செய்யவும்."], ["This order is already on its way, so it cannot be cancelled. If there is a problem, report it after delivery.", "இந்த ஆர்டர் ஏற்கனவே வழியில் உள்ளது, ரத்து செய்ய முடியாது. பிரச்சனை இருந்தால் டெலிவரிக்குப் பிறகு புகாரளிக்கவும்."], ["Your problem has been sent to the FPO officer.", "உங்கள் புகார் FPO அதிகாரிக்கு அனுப்பப்பட்டது."], ["Start delivery", "டெலிவரியைத் தொடங்கு"], ["Reason if you cannot deliver", "டெலிவரி செய்ய முடியாவிட்டால் காரணம்"], ["Can't deliver", "டெலிவரி செய்ய முடியவில்லை"], ["Customer not reachable", "வாடிக்கையாளரைத் தொடர்பு கொள்ள முடியவில்லை"], ["Customer refused the order", "வாடிக்கையாளர் ஆர்டரை ஏற்கவில்லை"], ["Address not found", "முகவரி கிடைக்கவில்லை"], ["Road or vehicle problem", "சாலை அல்லது வாகனப் பிரச்சனை"], ["Produce got damaged", "விளைபொருள் சேதமடைந்தது"], ["Order started. Customers can no longer cancel it.", "டெலிவரி தொடங்கியது. வாடிக்கையாளர் இனி ரத்து செய்ய முடியாது."], ["Marked as failed. Stock returned to the shop.", "தோல்வி எனக் குறிக்கப்பட்டது. இருப்பு கடைக்குத் திருப்பப்பட்டது."], ["Marked as failed. Damaged produce is not returned to the shop; the FPO will be told.", "தோல்வி எனக் குறிக்கப்பட்டது. சேதமான பொருள் கடைக்குத் திரும்பாது; FPO-விற்குத் தெரிவிக்கப்படும்."], [" damaged during delivery (not restocked)", " டெலிவரியின் போது சேதம் (மீண்டும் இருப்பில் சேர்க்கப்படவில்லை)"], ["Order problems", "ஆர்டர் பிரச்சனைகள்"], ["No order problems.", "ஆர்டர் பிரச்சனைகள் இல்லை."], ["Decision", "முடிவு"], ["Choose a decision", "முடிவைத் தேர்வு செய்யவும்"], ["Choose a decision first.", "முதலில் முடிவைத் தேர்வு செய்யவும்."], ["Refund the customer", "வாடிக்கையாளருக்குப் பணம் திருப்பு"], ["Send a replacement", "மாற்றுப் பொருள் அனுப்பு"], ["Reject the complaint", "புகாரை நிராகரி"], ["Note to both sides (optional)", "இருவருக்கும் குறிப்பு (விருப்பம்)"], ["Decide", "முடிவு செய்"], ["Problem recorded. Customer and farmer can see the decision.", "முடிவு பதிவு செய்யப்பட்டது. வாடிக்கையாளரும் விவசாயியும் பார்க்கலாம்."], ["Recent cancelled and failed orders", "சமீபத்திய ரத்து மற்றும் தோல்வியான ஆர்டர்கள்"]);
+    PH.push(["Welcome! Who are you?", "வரவேற்கிறோம்! நீங்கள் யார்?"], ["I am a Farmer", "நான் ஒரு விவசாயி"], ["I am a Customer", "நான் ஒரு வாடிக்கையாளர்"], ["I am an FPO officer", "நான் ஒரு FPO அதிகாரி"], ["Register, get FPO approval, list your produce and manage orders.", "பதிவு செய்து, FPO அங்கீகாரம் பெற்று, விளைபொருட்களைப் பட்டியலிட்டு ஆர்டர்களை நிர்வகிக்கவும்."], ["Browse fresh produce from verified farmers and place orders.", "சரிபார்க்கப்பட்ட விவசாயிகளின் புதிய விளைபொருட்களைப் பார்த்து ஆர்டர் செய்யுங்கள்."], ["Verify farmers, handle order problems and stock about to spoil.", "விவசாயிகளைச் சரிபார்க்கவும், ஆர்டர் பிரச்சனைகள் மற்றும் கெட்டுப்போகும் இருப்பைக் கையாளவும்."], ["← Change role", "← பங்கை மாற்று"], ["How it works", "இது எப்படி வேலை செய்கிறது"], ["Farmer registers and the FPO verifies  →  Farmer lists produce  →  Customer orders directly", "விவசாயி பதிவு செய்கிறார், FPO சரிபார்க்கிறது  →  விவசாயி விளைபொருளைப் பட்டியலிடுகிறார்  →  வாடிக்கையாளர் நேரடியாக ஆர்டர் செய்கிறார்"]);
+    PH.push(["Order placed", "ஆர்டர் செய்யப்பட்டது"], ["Nearby", "அருகில் உள்ளது"], ["Expected delivery: ", "எதிர்பார்க்கப்படும் டெலிவரி: "], [" · by ", " · நேரம்: "], ["Farmer's location: ", "விவசாயியின் இருப்பிடம்: "], ["Expected delivery time", "எதிர்பார்க்கப்படும் டெலிவரி நேரம்"], ["In 15 minutes", "15 நிமிடங்களில்"], ["In 30 minutes", "30 நிமிடங்களில்"], ["In 1 hour", "1 மணி நேரத்தில்"], ["In 2 hours", "2 மணி நேரத்தில்"], ["In 4 hours", "4 மணி நேரத்தில்"], ["Tomorrow (within 1 day)", "நாளை (1 நாளுக்குள்)"], ["In 5 minutes", "5 நிமிடங்களில்"], ["Where are you now? (optional)", "நீங்கள் இப்போது எங்கே இருக்கிறீர்கள்? (விருப்பம்)"], ["Update location", "இருப்பிடத்தைப் புதுப்பி"], ["I'm nearby (about 5 minutes)", "நான் அருகில் இருக்கிறேன் (சுமார் 5 நிமிடங்கள்)"], ["Running late? Change expected time", "தாமதமா? எதிர்பார்க்கப்படும் நேரத்தை மாற்றவும்"], ["Update time", "நேரத்தைப் புதுப்பி"], ["Choose the expected delivery time first.", "முதலில் எதிர்பார்க்கப்படும் டெலிவரி நேரத்தைத் தேர்வு செய்யவும்."], ["Delivery started. The customer can now see your expected time.", "டெலிவரி தொடங்கியது. வாடிக்கையாளர் இப்போது உங்கள் எதிர்பார்க்கப்படும் நேரத்தைப் பார்க்கலாம்."], ["Location updated.", "இருப்பிடம் புதுப்பிக்கப்பட்டது."], ["The customer has been told you are nearby.", "நீங்கள் அருகில் இருப்பதாக வாடிக்கையாளருக்குத் தெரிவிக்கப்பட்டது."], ["Expected time updated.", "எதிர்பார்க்கப்படும் நேரம் புதுப்பிக்கப்பட்டது."]);
+    PH.push(["Live tracking", "நேரடி கண்காணிப்பு"], ["Farmer · ", "விவசாயி · "], ["Your place", "உங்கள் இடம்"], ["Farmer's live position (GPS)", "விவசாயியின் நேரடி நிலை (GPS)"], ["Open in Google Maps", "கூகுள் மேப்ஸில் திற"], ["Share live GPS location", "நேரடி GPS இருப்பிடத்தைப் பகிர்"], ["GPS location is on", "GPS இருப்பிடம் இயக்கத்தில் உள்ளது"], ["Waiting for GPS...", "GPS-க்காக காத்திருக்கிறது..."], ["GPS sharing stopped.", "GPS பகிர்வு நிறுத்தப்பட்டது."], ["Allow location access to share GPS.", "GPS பகிர இருப்பிட அணுகலை அனுமதிக்கவும்."], ["This device cannot share GPS.", "இந்த சாதனத்தால் GPS பகிர முடியாது."]);
+    PH.push(["On its way. This order can no longer be cancelled.", "வழியில் உள்ளது. இந்த ஆர்டரை இனி ரத்து செய்ய முடியாது."]);
+    PH.push(["Delivery address (house / street / village)", "டெலிவரி முகவரி (வீடு / தெரு / கிராமம்)"], ["Landmark (optional)", "அடையாளம் (விருப்பம்)"], ["Use my current location", "என் தற்போதைய இருப்பிடத்தைப் பயன்படுத்து"], ["✓ Location added", "✓ இருப்பிடம் சேர்க்கப்பட்டது"], ["Enter your delivery address first.", "முதலில் உங்கள் டெலிவரி முகவரியை உள்ளிடவும்."], ["Deliver to:", "டெலிவரி முகவரி:"], ["Delivering to:", "டெலிவரி செய்யப்படும் முகவரி:"], ["Open on map", "வரைபடத்தில் திற"], ["Notifications", "அறிவிப்புகள்"], ["Mark all as read", "அனைத்தையும் படித்ததாகக் குறி"], ["New order: ", "புதிய ஆர்டர்: "], [" · customer ", " · வாடிக்கையாளர்: "], [" · deliver to ", " · டெலிவரி முகவரி: "], ["Order cancelled by customer: ", "வாடிக்கையாளர் ஆர்டரை ரத்து செய்தார்: "], [" · reason: ", " · காரணம்: "], ["New order problem: ", "புதிய ஆர்டர் பிரச்சனை: "], ["Your order ", "உங்கள் ஆர்டர் "], [" is out for delivery. Expected: ", " டெலிவரிக்கு புறப்பட்டது. எதிர்பார்ப்பு: "], [": the farmer is nearby (about 5 minutes).", ": விவசாயி அருகில் இருக்கிறார் (சுமார் 5 நிமிடங்கள்)."], [" was delivered. If anything is wrong, report a problem.", " டெலிவரி செய்யப்பட்டது. ஏதேனும் தவறு இருந்தால் பிரச்சனையைப் புகாரளிக்கவும்."], ["Delivery failed for your order ", "உங்கள் ஆர்டருக்கான டெலிவரி தோல்வி: "], ["Delivery time changed for ", "டெலிவரி நேரம் மாற்றப்பட்டது: "], ["FPO decision on ", "FPO முடிவு: "]);
+    PH.sort(function (a, b) { return b[0].length - a[0].length });
+    function tx(s) { var o = s; RX.forEach(function (r) { o = o.replace(r[0], r[1]) }); PH.forEach(function (p) { o = o.split(p[0]).join(p[1]) }); return o.replace(/\bkg\b/g, "கிலோ").replace(/\bbunch\b/g, "கட்டு") }
+    function xl(el) { var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n, a = []; while (n = w.nextNode()) a.push(n); a.forEach(function (n) { if (n.nodeValue.trim()) n.nodeValue = tx(n.nodeValue) }) }
+    function D(n) { var d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10) }
+    function seed() {
+      return {
+        n: 10,
+        farmers: [{ id: 1, name: "Murugan", village: "Village A", phone: "9000000001", fpo: "FPO-101", pw: "1234", st: "approved", fpoName: "Green Valley FPO", acres: 2, crops: "Tomato, Brinjal", land: "PATTA-1001", chk: {} }, { id: 2, name: "Lakshmi", village: "Village B", phone: "9000000002", fpo: "FPO-102", pw: "1234", st: "pending", fpoName: "Green Valley FPO", acres: 1, crops: "Spinach", land: "PATTA-2002", chk: {}, docs: { id: SAMPLE("Sample ID proof"), land: SAMPLE("Sample land record") } }, { id: 3, name: "Senthil", village: "Village C", phone: "9000000004", fpo: "", pw: "1234", st: "pending", fpoName: "Green Valley FPO", acres: 1.5, crops: "Banana", land: "PATTA-3003", chk: {} }],
+        products: [{ id: 1, fid: 1, name: "Tomato", price: 30, qty: 40, unit: "kg", harvest: D(-1), sell: D(5), sur: 0 }, { id: 2, fid: 1, name: "Brinjal", price: 40, qty: 25, unit: "kg", harvest: D(-2), sell: D(2), sur: 0 }, { id: 3, fid: 1, name: "Spinach", price: 20, qty: 15, unit: "bunch", harvest: D(-1), sell: D(1), sur: 0 }],
+        orders: [], members: [{ no: "FPO-101", name: "Murugan", phone: "9000000001", fpoName: "Green Valley FPO" }, { no: "FPO-102", name: "Lakshmi", phone: "9000000002", fpoName: "Green Valley FPO" }], log: [], cust: { name: "", phone: "" }
+      }
+    }
+    var S; try { S = JSON.parse(localStorage.getItem(KEY)) } catch (e) { S = null } if (!S) S = seed();
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); return true } catch (e) { return false } }
+    function esc(t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] }) }
+    function left(p) { return Math.round((new Date(p.sell) - new Date(D(0))) / 864e5) }
+    function disc(p) { var l = left(p); return p.sur || l <= 1 ? .25 : l <= 3 ? .1 : 0 }
+    function pr(p) { return Math.round(p.price * (1 - disc(p))) }
+    function fm(id) { return S.farmers.filter(function (f) { return f.id == id })[0] }
+    function say(t) { notice = t; render() }
+
+    function load() { try { var j = JSON.parse(localStorage.getItem(KEY)); if (j) S = j } catch (e) { } }
+    function setLang(l) { LANG = l; try { localStorage.setItem("ffd_lang", l) } catch (e) { } render() }
+    function resetData() { try { localStorage.removeItem(KEY) } catch (e) { } location.reload() }
+    function draw(active, html) {
+      var $ = function (i) { return document.getElementById(i) };
+      $("h1").textContent = "FreshFarm Direct";
+      $("sub").textContent = "Buy straight from verified farmers. No middlemen.";
+      $("ft").textContent = NOTE;
+      var pages = [["customer.html", "Customer", "c"], ["farmer.html", "Farmer", "f"], ["fpo.html", "FPO officer", "p"]];
+      if (typeof SOLO !== "undefined" && SOLO) pages = [];   /* SOLO=true: show only this role's page */
+      $("nav").innerHTML = pages.map(function (p) { return '<a href="' + p[0] + '"' + (p[2] == active ? ' class="on"' : '') + '>' + p[1] + '</a>' }).join("");
+      $("msg").innerHTML = notice ? '<div class="msg">' + esc(notice) + '</div>' : "";
+      $("app").innerHTML = '<div id="nb">' + noteBar() + '</div>' + html;
+      if (LANG == "ta") ["h1", "sub", "ft", "nav", "msg", "app"].forEach(function (i) { xl($(i)) });
+      $("nav").insertAdjacentHTML("beforeend", '<button onclick="setLang(\'' + (LANG == "ta" ? "en" : "ta") + '\')">' + (LANG == "ta" ? "English" : "தமிழ்") + '</button>');
+      document.documentElement.lang = LANG;
+    }
+    var KEEP = false;
+    function fail(t) { KEEP = true; say(t) }            /* error message: keep what the user already typed */
+    function render() {
+      var keep = {};
+      if (KEEP) document.querySelectorAll("#app input,#app select").forEach(function (e) { if (e.id && e.type != "file" && e.type != "checkbox") keep[e.id] = e.value });
+      load(); draw(PAGE, view()); tickEta(); noteSync();
+      if (KEEP) document.querySelectorAll("#app input,#app select").forEach(function (e) { if (e.id && keep[e.id] !== undefined && e.type != "file") e.value = keep[e.id] });
+      KEEP = false; notice = ""
+    }
+    window.addEventListener("storage", function (e) { if (e.key == KEY || e.key == "ffd_lang") { try { LANG = localStorage.getItem("ffd_lang") || LANG } catch (x) { } KEEP = true; render() } });
+
+    /* ---------- photo proof helpers (farmer uploads, FPO officer views) ---------- */
+    var IMG = {};
+    function tt(s) { return LANG == "ta" ? tx(s) : s }
+    function SAMPLE(t) { return "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="280"><rect width="400" height="280" fill="#e8efe6" stroke="#1f6b3a" stroke-width="4"/><text x="200" y="145" font-size="26" text-anchor="middle" font-family="sans-serif" fill="#1f6b3a">' + t + '</text></svg>') }
+    function pick(el, k) {                        /* read the chosen photo, shrink it, keep it until the form is sent */
+      var f = el.files[0]; if (!f) return; var st = document.getElementById("pst_" + k); st.textContent = tt("Reading photo...");
+      var r = new FileReader(); r.onload = function () {
+        var im = new Image();
+        im.onload = function () {
+          var sc = Math.min(1, 700 / Math.max(im.width, im.height)), cv = document.createElement("canvas");
+          cv.width = Math.round(im.width * sc); cv.height = Math.round(im.height * sc); cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+          IMG[k] = cv.toDataURL("image/jpeg", 0.6); st.textContent = tt("\u2713 Photo added")
+        };
+        im.onerror = function () { st.textContent = tt("This file is not a photo. Choose an image.") }; im.src = r.result
+      };
+      r.readAsDataURL(f)
+    }
+    function docBox(label, src) { return src ? '<div><img class="thumb" src="' + src + '" onclick="zoom(this.src)" alt=""><div class="m">' + label + '</div></div>' : '<div class="m">' + label + ': not uploaded</div>' }
+    function zoom(src) {
+      var o = document.createElement("div"); o.style.cssText = "position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:9;cursor:zoom-out;padding:16px";
+      o.innerHTML = '<img src="' + src + '" style="max-width:100%;max-height:100%;border-radius:8px">'; o.onclick = function () { o.remove() }; document.body.appendChild(o)
+    }
+
+    /* ---------- order status helpers (cancel, delivery problems) ---------- */
+    function ordTxt(o) {
+      var s = o.st;
+      if (s == "Cancelled") return "Cancelled by customer: " + (o.why || "");
+      if (s == "Delivery failed") return "Delivery failed: " + (o.why || "");
+      if (s == "Issue reported") return "Problem reported: " + (o.why || "") + (o.note ? " (" + o.note + ")" : "") + " \u2014 waiting for FPO decision";
+      if (s == "Resolved") return "Problem reported: " + (o.why || "") + ". FPO decision: " + (o.res || "");
+      return ""
+    }
+    function restock(o) { var p = S.products.filter(function (x) { return x.id == o.pid })[0]; if (p && left(p) >= 0) p.qty += o.q }
+    function ordById(id) { return S.orders.filter(function (x) { return x.id == id })[0] }
+
+    /* ---------- delivery tracking: expected time, countdown, steps, farmer location ---------- */
+    var ETL = { 15: "In 15 minutes", 30: "In 30 minutes", 60: "In 1 hour", 120: "In 2 hours", 240: "In 4 hours", 1440: "Tomorrow (within 1 day)" };
+    function etaOpts() { return '<option value="">Expected delivery time</option>' + Object.keys(ETL).map(function (k) { return '<option value="' + k + '">' + ETL[k] + '</option>' }).join("") }
+    function fmtT(ms) {
+      var d = new Date(ms), s = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+      return (d.toDateString() != new Date().toDateString() ? d.toLocaleDateString([], { day: "numeric", month: "short" }) + ", " : "") + s
+    }
+    function etaLeft(at) {
+      var m = Math.round((at - Date.now()) / 6e4), ta = LANG == "ta";
+      if (m <= 0) return ta ? "தாமதமாகிறது \u2014 விவசாயி தகவல் தருவார்" : "Running late \u2014 the farmer will update you";
+      if (m < 60) return ta ? "சுமார் " + m + " நிமிடங்கள் மீதம்" : "about " + m + " min left";
+      if (m < 1440) { var h = Math.floor(m / 60), r = m % 60; return ta ? "சுமார் " + h + " மணி " + r + " நிமிடம் மீதம்" : "about " + h + " h " + r + " min left" }
+      var d = Math.round(m / 1440); return ta ? "சுமார் " + d + " நாள் மீதம்" : "about " + d + " day left"
+    }
+    function tickEta() {
+      document.querySelectorAll(".eta").forEach(function (e) { e.textContent = etaLeft(+e.getAttribute("data-at")) });
+      document.querySelectorAll(".road").forEach(function (r) {
+        var a = +r.getAttribute("data-out"), e = +r.getAttribute("data-at"), d = r.querySelector(".dot");
+        if (a && e && d) d.style.left = routePct(a, e, r.getAttribute("data-near") == "1") + "%"
+      })
+    }
+    setInterval(tickEta, 10000);
+    function track(o) {
+      if (o.st == "Cancelled" || o.st == "Delivery failed") return "";
+      var tm = o.tm || {}, out = o.st != "New", dn = ["Delivered", "Issue reported", "Resolved"].indexOf(o.st) >= 0;
+      var st = [["Order placed", tm.placed, true], ["Out for delivery", tm.out, out], ["Nearby", tm.near, !!o.near || dn], ["Delivered", tm.del, dn]];
+      var h = '<div class="trk">' + st.map(function (s) { return '<span class="stp' + (s[2] ? ' on' : '') + '">' + (s[2] ? '\u2713 ' : '') + s[0] + (s[1] ? ' <small>' + fmtT(s[1]) + '</small>' : '') + '</span>' }).join('<span class="arr">\u2192</span>') + '</div>';
+      if (o.st == "Out for delivery" && o.etaAt) h += '<div class="m">Expected delivery: ' + esc(o.etaTxt || "") + ' · by ' + fmtT(o.etaAt) + '</div><div class="eta-line"><b class="eta" data-at="' + o.etaAt + '">' + etaLeft(o.etaAt) + '</b></div>';
+      if (o.st == "Out for delivery" && o.where) h += '<div class="m">Farmer\'s location: ' + esc(o.where) + '</div>';
+      if (o.st == "Out for delivery") h += routeHtml(o);
+      return h
+    }
+
+    /* ---------- live tracking: moving truck on the route + optional real GPS map ---------- */
+    function routePct(out, at, near) { var p = (Date.now() - out) / (at - out); if (!isFinite(p)) p = .04; p = Math.max(.04, Math.min(.96, p)); if (near) p = Math.max(p, .9); return Math.round(p * 100) }
+    function routeHtml(o) {
+      var f = fm(o.fid), tm = o.tm || {}, at = o.etaAt || 0, out = tm.out || 0, g = o.geo;
+      var h = '<div class="route"><b>Live tracking</b><div class="rline"><span class="rend">Farmer' + (f ? ' \u00b7 ' + esc(f.village) : '') + '</span>'
+        + '<div class="road" data-out="' + out + '" data-at="' + at + '" data-near="' + (o.near ? 1 : 0) + '"><i class="dot" style="left:' + (out && at ? routePct(out, at, o.near) : 4) + '%">\uD83D\uDE9A</i></div><span class="rend">Your place</span></div>';
+      if (g && Date.now() - g.t < 18e5) h += '<div class="m">Farmer\'s live position (GPS) <small>' + fmtT(g.t) + '</small></div>'
+        + '<iframe class="map" loading="lazy" title="map" src="https://www.openstreetmap.org/export/embed.html?bbox=' + (g.lng - .01) + '%2C' + (g.lat - .01) + '%2C' + (g.lng + .01) + '%2C' + (g.lat + .01) + '&amp;layer=mapnik&amp;marker=' + g.lat + '%2C' + g.lng + '"></iframe>'
+        + '<div class="m"><a target="_blank" rel="noopener" href="https://www.google.com/maps?q=' + g.lat + ',' + g.lng + '">Open in Google Maps</a></div>';
+      return h + '</div>'
+    }
+    var GPSW = {};
+    function shareGps(id) {
+      var st = function () { return document.getElementById("gs" + id) }, say2 = function (t) { var e = st(); if (e) e.textContent = tt(t) };
+      if (!navigator.geolocation) return fail("This device cannot share GPS.");
+      if (GPSW[id] != null) { navigator.geolocation.clearWatch(GPSW[id]); GPSW[id] = null; return say2("GPS sharing stopped.") }
+      say2("Waiting for GPS...");
+      GPSW[id] = navigator.geolocation.watchPosition(function (p) {
+        load(); var o = ordById(id); if (!o || o.st != "Out for delivery") { navigator.geolocation.clearWatch(GPSW[id]); GPSW[id] = null; return }
+        if (o.geo && Date.now() - o.geo.t < 8000) return;
+        o.geo = { lat: p.coords.latitude, lng: p.coords.longitude, t: Date.now() }; save();
+        var e = st(); if (e) e.textContent = tt("GPS location is on") + " (" + fmtT(o.geo.t) + ")"
+      },
+        function () { GPSW[id] = null; say2("Allow location access to share GPS.") }, { enableHighAccuracy: true, maximumAge: 5000 })
+    }
+
+    /* reset link is hidden unless the page is opened with ?demo at the end of the address */
+    (function () { if (/[?&]demo\b/.test(location.search)) { var e = document.getElementById("rs"); if (e) e.style.display = "block" } })();
+
+    /* ---------- customer delivery address + farmer can open it on a map ---------- */
+    function addrBlock(o, label) {
+      if (!o.addr) return "";
+      var q = o.cgeo ? o.cgeo.lat + "," + o.cgeo.lng : encodeURIComponent(o.addr + (o.land ? ", " + o.land : ""));
+      return '<div class="m"><b>' + label + '</b> ' + esc(o.addr) + (o.land ? ' (' + esc(o.land) + ')' : '') + ' \u00b7 <a target="_blank" rel="noopener" href="https://www.google.com/maps?q=' + q + '">Open on map</a></div>'
+    }
+    function useMyLoc() {
+      var st = document.getElementById("cls");
+      if (!navigator.geolocation) { if (st) st.textContent = tt("This device cannot share GPS."); return }
+      navigator.geolocation.getCurrentPosition(function (p) { load(); S.cust = S.cust || {}; S.cust.geo = { lat: p.coords.latitude, lng: p.coords.longitude }; save(); var e = document.getElementById("cls"); if (e) e.textContent = tt("\u2713 Location added") },
+        function () { var e = document.getElementById("cls"); if (e) e.textContent = tt("Allow location access to share GPS.") }, { enableHighAccuracy: true })
+    }
+    function saveCust() {
+      var g = function (i) { var e = document.getElementById(i); return e ? e.value.trim() : "" };
+      load(); S.cust = { name: g("cn"), phone: g("cp"), addr: g("ca"), land: g("cl"), geo: (S.cust && S.cust.geo) || null }; save(); refreshNotes()
+    }
+    /* ---------- notifications: in-app alerts, tab-title count and a short beep ---------- */
+    function notify(to, text) { S.notes = S.notes || []; S.notes.push({ id: S.n++, to: to, text: text, t: Date.now(), read: false }) }
+    function myKey() {
+      var pg = typeof PAGE !== "undefined" ? PAGE : "";
+      if (pg == "a") pg = { c: "c", f: "f", p: "p" }[curRole()] || "";
+      if (pg == "c") return S.cust && S.cust.phone ? "c" + S.cust.phone : "";
+      if (pg == "f") return typeof fs !== "undefined" && fs ? "f" + fs : "";
+      if (pg == "p") return typeof ok !== "undefined" && ok ? "p" : "";
+      return ""
+    }
+    function unread() { var k = myKey(); return k ? (S.notes || []).filter(function (x) { return x.to == k && !x.read }) : [] }
+    function noteBar() {
+      var u = unread(); if (!u.length) return "";
+      return '<div class="nbar"><div class="row" style="padding:0 0 6px"><b>\uD83D\uDD14 Notifications (' + u.length + ')</b><button class="b s" style="margin:0" onclick="readNotes()">Mark all as read</button></div>'
+        + u.slice(-5).reverse().map(function (x) { return '<div class="m" style="color:var(--ink);margin-bottom:4px">' + esc(x.text) + ' <small>' + fmtT(x.t) + '</small></div>' }).join("") + '</div>'
+    }
+    function refreshNotes() { var e = document.getElementById("nb"); if (!e) return; e.innerHTML = noteBar(); if (LANG == "ta") xl(e); noteSync() }
+    function readNotes() { load(); var k = myKey(); (S.notes || []).forEach(function (x) { if (x.to == k) x.read = true }); save(); render() }
+    var LASTN = -1;
+    function noteSync() { var n = unread().length; document.title = (n ? "(" + n + ") " : "") + "FreshFarm Direct"; if (LASTN >= 0 && n > LASTN) beep(); LASTN = n }
+    function beep() { try { var a = new (window.AudioContext || window.webkitAudioContext)(), o = a.createOscillator(), g = a.createGain(); o.frequency.value = 880; g.gain.value = .08; o.connect(g); g.connect(a.destination); o.start(); setTimeout(function () { o.stop(); a.close() }, 180) } catch (e) { } }
+
+  </script>
+  <script>
+    /* ===== FARMER PAGE ===== */
+    var SOLO = true;   // true = this page shows only its own role (no links to other roles). Set false to show them.
+    var PAGE = "f", NOTE = "";
+    var fs = null; try { fs = parseInt(sessionStorage.getItem("ffd_fs")) || null } catch (e) { }
+    function out() { fs = null; try { sessionStorage.removeItem("ffd_fs") } catch (e) { } render() }
+    function view() { return vF() }
+
+    function vF() {
+      var f = fs && fm(fs);
+      if (!f) return '<div class="grid"><div class="box"><h2>Farmer login</h2><label>Phone</label><input id="lp"><label>Password</label><input id="lw" type="password"><button class="b" onclick="login()">Log in</button></div><div class="box"><h2>New farmer? Register</h2><label>Name</label><input id="rn"><label>Village</label><input id="rv"><label>Phone</label><input id="rp"><label>Select your FPO</label><select id="rfp">' + FPOS.map(function (x) { return '<option>' + esc(x) + '</option>' }).join("") + '</select><label>Land size (acres)</label><input id="ra" type="number" step="0.1"><label>Crops grown</label><input id="rc"><label>Land record (patta) no.</label><input id="rl"><label>FPO membership no. (leave blank if you are new)</label><input id="rf"><label>ID proof type</label><select id="rt"><option value="Aadhaar card">Aadhaar card</option><option value="Voter ID">Voter ID</option><option value="Other government ID">Other government ID</option></select><label>ID proof photo (Aadhaar / voter ID)</label><input type="file" accept="image/*" onchange="pick(this,\'id\')"><div class="m" id="pst_id">' + (IMG.id ? "\u2713 Photo added" : "") + '</div><label>Land record photo (patta / chitta)</label><input type="file" accept="image/*" onchange="pick(this,\'land\')"><div class="m" id="pst_land">' + (IMG.land ? "\u2713 Photo added" : "") + '</div><label>Create password</label><input id="rw" type="password"><button class="b" onclick="reg()">Send for FPO approval</button></div></div>';
+      var h = '<div class="box"><div class="row"><b>Welcome, ' + esc(f.name) + '</b><button class="b s" onclick="out()">Log out</button></div></div>';
+      h += '<div class="box"><h2>List a product</h2><div class="grid"><div><label>Crop</label><input id="pn"></div><div><label>Price per unit (₹)</label><input id="pp" type="number"></div><div><label>Quantity</label><input id="pq" type="number"></div><div><label>Unit (kg, bunch...)</label><input id="pu" value="kg"></div><div><label>Harvest date</label><input id="ph" type="date" value="' + D(0) + '"></div><div><label>Sell-by date</label><input id="ps" type="date" value="' + D(4) + '"></div></div><button class="b" onclick="addP()">Add to shop</button></div>';
+      var mp = S.products.filter(function (p) { return p.fid == f.id });
+      h += '<div class="box"><h2>Your listings</h2>' + (mp.length ? mp.map(function (p) { return '<div class="row"><span>' + esc(p.name) + ' · ' + p.qty + ' ' + esc(p.unit) + ' · ₹' + pr(p) + '</span><span class="m">sell by ' + esc(p.sell) + '</span></div>' }).join("") : '<span class="m">No listings yet. Add your first crop above.</span>') + '</div>';
+      var mo = S.orders.filter(function (o) { return o.fid == f.id });
+      h += '<div class="box"><h2>Orders to deliver</h2>' + (mo.length ? mo.map(farmOrd).join("") : '<span class="m">No orders yet.</span>') + '</div>';
+      return h
+    }
+
+    function login() {
+      var ph = document.getElementById("lp").value.trim(), pw = document.getElementById("lw").value, f = S.farmers.filter(function (x) { return x.phone == ph && x.pw == pw })[0];
+      if (!f) return fail("Wrong phone or password."); if (f.st == "pending") return fail("Your account is waiting for FPO approval. You will get a login SMS once approved."); if (f.st == "rejected") return fail("The FPO did not approve this account. Contact your FPO office." + (f.reason ? " Reason: " + f.reason : "")); fs = f.id; try { sessionStorage.setItem("ffd_fs", fs) } catch (e) { } say("")
+    }
+
+    function reg() {
+      var v = function (i) { return document.getElementById(i).value.trim() };
+      if (!v("rn") || !v("rv") || v("rp").length < 10 || !v("rl") || !(+v("ra") > 0) || !v("rc") || v("rw").length < 4) return fail("Fill every field. Phone needs 10 digits and password at least 4 characters.");
+      if (S.farmers.some(function (x) { return x.phone == v("rp") })) return fail("This phone number is already registered.");
+      if (!IMG.id || !IMG.land) return fail("Please add both photos: ID proof and land record.");
+      S.farmers.push({ id: S.n++, name: v("rn"), village: v("rv"), phone: v("rp"), fpoName: v("rfp"), acres: +v("ra"), crops: v("rc"), land: v("rl"), fpo: v("rf"), pw: v("rw"), st: "pending", chk: {}, idType: v("rt"), docs: { id: IMG.id, land: IMG.land } }); if (!save()) return fail("Could not save (browser storage full). Use smaller photos."); IMG = {}; say("Sent to your FPO. You can log in after approval.")
+    }
+    function addP() {
+      var v = function (i) { return document.getElementById(i).value.trim() };
+      if (!v("pn") || !(+v("pp") > 0) || !(+v("pq") > 0) || !v("ps")) return fail("Enter crop, price, quantity and sell-by date.");
+      S.products.push({ id: S.n++, fid: fs, name: v("pn"), price: +v("pp"), qty: +v("pq"), unit: v("pu") || "kg", harvest: v("ph"), sell: v("ps"), sur: 0 }); save(); say("Added. Customers can see it now.")
+    }
+
+
+    function farmOrd(o) {
+      var h = '<div class="row" style="display:block"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><span>' + esc(o.pn) + ' × ' + o.q + ' for ' + esc(o.cn) + ' (' + esc(o.cp) + ')</span><span>₹' + o.t + ' <span class="pill">' + esc(o.st) + '</span></span></div>';
+      var d = ordTxt(o); if (d) h += '<div class="m">' + esc(d) + '</div>';
+      h += addrBlock(o, "Deliver to:");
+      h += track(o);
+      if (o.st == "New") h += '<div style="max-width:340px"><select id="et' + o.id + '">' + etaOpts() + '</select><button class="b s" onclick="startDel(' + o.id + ')">Start delivery</button></div>';
+      if (o.st == "Out for delivery") h += '<div style="max-width:340px"><label>Where are you now? (optional)</label><input id="wh' + o.id + '" value="' + esc(o.where || "") + '"><button class="b s" onclick="updWhere(' + o.id + ')">Update location</button><button class="b s" onclick="shareGps(' + o.id + ')">Share live GPS location</button><div class="m" id="gs' + o.id + '">' + (o.geo && Date.now() - o.geo.t < 12e4 ? 'GPS location is on (' + fmtT(o.geo.t) + ')' : '') + '</div> <button class="b s" onclick="nearBy(' + o.id + ')">I\'m nearby (about 5 minutes)</button><label>Running late? Change expected time</label><select id="et' + o.id + '">' + etaOpts() + '</select><button class="b s" onclick="updEta(' + o.id + ')">Update time</button><br><button class="b s" onclick="done(' + o.id + ')">Mark delivered</button></div>';
+      if (o.st == "New" || o.st == "Out for delivery") h += '<div style="max-width:340px"><select id="fr' + o.id + '"><option value="">Reason if you cannot deliver</option><option>Customer not reachable</option><option>Customer refused the order</option><option>Address not found</option><option>Road or vehicle problem</option><option>Produce got damaged</option></select><button class="b r" onclick="failDel(' + o.id + ')">Can\'t deliver</button></div>';
+      return h + '</div>'
+    }
+    function startDel(id) {
+      load(); var o = ordById(id), s = document.getElementById("et" + id);
+      if (!o || o.st != "New") return render();
+      if (!s || !s.value) return fail("Choose the expected delivery time first.");
+      o.st = "Out for delivery"; o.tm = o.tm || {}; o.tm.out = Date.now(); o.etaAt = Date.now() + (+s.value) * 6e4; o.etaTxt = ETL[s.value];
+      notify("c" + o.cp, "Your order " + o.pn + " is out for delivery. Expected: " + o.etaTxt); save(); say("Delivery started. The customer can now see your expected time.")
+    }
+    function updWhere(id) {
+      load(); var o = ordById(id); if (!o || o.st != "Out for delivery") return render();
+      o.where = document.getElementById("wh" + id).value.trim(); save(); say("Location updated.")
+    }
+    function nearBy(id) {
+      load(); var o = ordById(id); if (!o || o.st != "Out for delivery") return render();
+      o.near = true; o.tm = o.tm || {}; o.tm.near = Date.now(); o.etaAt = Date.now() + 5 * 6e4; o.etaTxt = "In 5 minutes"; notify("c" + o.cp, "Your order " + o.pn + ": the farmer is nearby (about 5 minutes)."); save(); say("The customer has been told you are nearby.")
+    }
+    function updEta(id) {
+      load(); var o = ordById(id), s = document.getElementById("et" + id); if (!o || o.st != "Out for delivery") return render();
+      if (!s || !s.value) return fail("Choose the expected delivery time first.");
+      o.etaAt = Date.now() + (+s.value) * 6e4; o.etaTxt = ETL[s.value]; notify("c" + o.cp, "Delivery time changed for " + o.pn + ": " + o.etaTxt); save(); say("Expected time updated.")
+    }
+    function done(id) { load(); var o = ordById(id); if (o && o.st == "Out for delivery") { o.st = "Delivered"; o.tm = o.tm || {}; o.tm.del = Date.now(); notify("c" + o.cp, "Your order " + o.pn + " was delivered. If anything is wrong, report a problem."); save() } render() }
+    function failDel(id) {
+      load(); var o = ordById(id), r = document.getElementById("fr" + id).value;
+      if (!o || (o.st != "New" && o.st != "Out for delivery")) return render();
+      if (!r) return fail("Choose a reason first.");
+      o.st = "Delivery failed"; o.why = r; notify("c" + o.cp, "Delivery failed for your order " + o.pn + ": " + r);
+      if (r == "Produce got damaged") { S.log.push(o.pn + ": " + o.q + " damaged during delivery (not restocked)"); save(); return say("Marked as failed. Damaged produce is not returned to the shop; the FPO will be told.") }
+      restock(o); save(); say("Marked as failed. Stock returned to the shop.")
+    }
+
+    render();
+  </script><button id="inst" class="b"
+    style="display:none;position:fixed;right:14px;bottom:14px;z-index:5;box-shadow:0 2px 10px rgba(0,0,0,.25)"></button>
+  <div id="ioshint" class="nbar"
+    style="display:none;position:fixed;left:12px;right:12px;bottom:12px;z-index:5;margin:0"></div>
+  <script>
+    /* ===== install as an app (PWA) ===== */
+    (function () {
+      if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) window.addEventListener("load", function () { navigator.serviceWorker.register("sw.js").catch(function () { }) });
+      PH.push(["Install app", "\u0b86\u0baa\u0bcd\u0bb8\u0bcd \u0ba8\u0bbf\u0bb1\u0bc1\u0bb5\u0bc1"], ["On iPhone: tap the Share button, then \u201cAdd to Home Screen\u201d to install this app.", "iPhone-\u0bb2\u0bcd: Share \u0baa\u0b9f\u0bcd\u0b9f\u0ba9\u0bc8 \u0b85\u0bb4\u0bc1\u0ba4\u0bcd\u0ba4\u0bbf, \u201cAdd to Home Screen\u201d \u0ba4\u0bc7\u0bb0\u0bcd\u0bb5\u0bc1 \u0b9a\u0bc6\u0baf\u0bcd\u0baf\u0bb5\u0bc1\u0bae\u0bcd."], ["Close", "\u0bae\u0bc2\u0b9f\u0bc1"]);
+      PH.sort(function (a, b) { return b[0].length - a[0].length });
+      var btn = document.getElementById("inst"), hint = document.getElementById("ioshint"), ev = null,
+        app = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+      function label() { btn.textContent = tt("Install app") }
+      window.addEventListener("beforeinstallprompt", function (e) { e.preventDefault(); ev = e; if (!app) { label(); btn.style.display = "block" } });
+      window.addEventListener("appinstalled", function () { btn.style.display = "none" });
+      btn.onclick = function () { if (!ev) return; ev.prompt(); ev.userChoice.then(function () { ev = null; btn.style.display = "none" }) };
+      if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !app && !sessionStorage.getItem("ffd_ioshint")) {
+        hint.innerHTML = '<span>' + tt("On iPhone: tap the Share button, then \u201cAdd to Home Screen\u201d to install this app.") + '</span> <button class="b s" style="margin:6px 0 0" onclick="this.parentNode.style.display=\'none\';sessionStorage.setItem(\'ffd_ioshint\',1)">' + tt("Close") + '</button>'; hint.style.display = "block"
+      }
+    })();
+  </script>
+</body>
+
+</html>
